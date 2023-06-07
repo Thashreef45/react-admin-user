@@ -11,12 +11,16 @@ function UserProfile() {
     const { userEmail } = useSelector((state)=>state.auth)
     let [image,setImage] = useState('')
     let [name,setName] = useState('')
+    let [email,setEmail] = useState(userEmail)
     
     useEffect(()=>{
-        const token = localStorage.getItem('jwt')
-        axiosInstance.post('/admin/find-user',{email:userEmail}).then((res)=>{
+        const token = localStorage.getItem('jwt');
+        axiosInstance.post('/user-profile',{
+            email : userEmail
+        },{headers:{Authorization:`Bearer ${token}`}}).then((res)=>{
             setImage(res.data.image)
             setName(res.data.name)
+            setEmail(res.data.email)
         })
     },[])
 
@@ -35,7 +39,7 @@ function UserProfile() {
                                 </div>
                                 <MDBTypography tag="h4">{name}</MDBTypography>
                                 <MDBCardText className="text-muted mb-4">
-                                    <span className="mx-2">{userEmail}</span> 
+                                    <span className="mx-2">{email}</span> 
                                 </MDBCardText>
                                 {/* <div className="mb-4 pb-2">
                                     <MDBBtn outline floating>

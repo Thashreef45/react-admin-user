@@ -18,13 +18,20 @@ import {
 }
 from 'mdb-react-ui-kit';
 import UserNav from './UserNav';
+import axiosInstance from '../../config/axiosInstance';
 
 function Home() {
     
     const navigate = useNavigate()
     useEffect(()=>{
         if(!localStorage.getItem('jwt'))navigate('/login');
-    })
+        else axiosInstance.get('/',{headers:{Authorization:`Bearer ${localStorage.getItem('jwt')}`}}).then((res)=>{
+          console.log('error in auth')
+        }).catch(()=>{
+          console.log('erro vannu ----31')
+          // error
+        })
+    },[])
   return (
    <>
     <UserNav />

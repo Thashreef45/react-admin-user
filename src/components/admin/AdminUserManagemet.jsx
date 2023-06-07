@@ -5,6 +5,7 @@ import store from '../../redux/store'
 import { useDispatch } from "react-redux"
 
 function AdminUserManagement() {
+    let token = localStorage.getItem('adminJwt') ? localStorage.getItem('adminJwt') : null
     const navigate = useNavigate()
     const [userTable, setUserTable] = useState([])
     let users // storing user table data
@@ -12,10 +13,12 @@ function AdminUserManagement() {
         if (!localStorage.getItem('adminJwt')) {
             navigate('/admin/login');
         } else {
-            axiosInstance.get('/admin/user-details').then((res) => {
+            axiosInstance.get('/admin/user-details',{headers:{Authorization:`Bearer ${token}`}}).then((res) => {
                 setUserTable(res.data.users);
                 users = res.data.users
             }).catch((error) => {
+                console.log('hi--- error',token)
+
                 // Handle error
             });
         }
@@ -29,16 +32,18 @@ function AdminUserManagement() {
     }
 
     function manageUserStatus(status, userId) {
+        if(token){
         axiosInstance.patch('/admin/block-unblock-user',
             {
+                adminToken : token,
                 userId, status
             }).then((res) => {
                 setUserTable(res.data.users)
-            })
+            })}
     }
 
     function searchUser(key){
-        axiosInstance.post('/admin/search-user',{key:key}).then((res)=>{
+        axiosInstance.post('/admin/search-user',{key:key,adminToken : token,}).then((res)=>{
             setUserTable(res.data)
         })
 

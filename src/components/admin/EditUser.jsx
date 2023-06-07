@@ -5,12 +5,14 @@ import axiosInstance from "../../config/axiosInstance"
 function EditUser() {
     let userId = useParams()
     let navigate = useNavigate()
-
+    let token = localStorage.getItem('adminJwt')
 
     function handleUpdate(){
-        axiosInstance.patch('/admin/update-user',{
+        axiosInstance.patch('/admin/update-user',{headers:{Authorization:`Bearer ${token}`}},
+        {
             username,useremail,userId
-        }).then((res)=>{
+        }
+        ).then((res)=>{
             navigate('/admin/home')
         }).catch({
             //catching error
@@ -21,7 +23,7 @@ function EditUser() {
     const [useremail,setUserEmail] = useState('')
 
     useEffect(()=>{
-        axiosInstance.post('/admin/find-user',{userId}).then((res)=>{
+        axiosInstance.post('/admin/find-user',{headers:{Authorization:`Bearer ${token}`}},{userId}).then((res)=>{
             setUserEmail(res.data.email)
             setUserName(res.data.name)
         })
